@@ -27,6 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
   // TextEditingController passwordController = TextEditingController();
 
   var formKey = GlobalKey<FormState>();
+  bool isPasswordVisible = false;
 
   @override
   Widget build(BuildContext context) {
@@ -109,9 +110,18 @@ class _LoginScreenState extends State<LoginScreen> {
                     //       : Icons.visibility_off_rounded,
                     //   size: 24,
                     // ):
-                    icon: Icon(Icons.visibility_outlined,
-                    color: AppColors.labelTextColor,
-                    size: 30,
+
+                    isPasswordVisible: true,
+                    obscureText: !isPasswordVisible,
+                    icon: IconButton(
+                      onPressed: (){
+                        isPasswordVisible = !isPasswordVisible;
+                        setState(() {});
+                      },
+                      icon: Icon(isPasswordVisible ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+                        color: AppColors.labelTextColor,
+                        size: 30,
+                      ),
                     ),
                   ),
                   //SizedBox(height: MediaQuery.of(context).size.height*0.0,),
