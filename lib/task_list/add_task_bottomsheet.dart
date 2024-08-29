@@ -211,6 +211,7 @@ class _AddTaskBottomsheetState extends State<AddTaskBottomsheet> {
         initialDate: DateTime.now(),
         firstDate: DateTime.now(),
         lastDate: DateTime.now().add(Duration(days: 365))
+
     );
     selectedDate = chosenDate ?? selectedDate;
     setState(() {

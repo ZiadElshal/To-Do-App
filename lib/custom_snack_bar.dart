@@ -9,7 +9,11 @@ class CustomSnackBar {
   //final String imagePath;
   final Icon icon;
   final VoidCallback onPressed;
-  final Task deletedTask; // Add this to store the deleted task
+  final String labelTextButton;
+  final Task deletedTask;         // to store the deleted task
+  final Color backgroundColor;
+  final Color textColor; // Custom text color
+
 
   CustomSnackBar({
     required this.scaffoldCtx,
@@ -19,6 +23,9 @@ class CustomSnackBar {
     required this.icon,
     required this.onPressed,
     required this.deletedTask,
+    this.labelTextButton = "",
+    this.backgroundColor = Colors.black, // Default background color
+    this.textColor = Colors.white
   });
 
   void showSnackBar() {
@@ -28,8 +35,10 @@ class CustomSnackBar {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
         clipBehavior: Clip.antiAliasWithSaveLayer,
         elevation: 1,
-        child: Container(
-          color: AppColors.hintTextColor,
+        child:
+        ///snack bar design
+        Container(
+          color: AppColors.snackBarColor, //snack bar color
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
           child: Row(
             children: [
@@ -45,27 +54,34 @@ class CustomSnackBar {
                     Text(
                       title,
                       style: Theme.of(scaffoldCtx).textTheme.labelLarge!.copyWith(
-                        color: Theme.of(scaffoldCtx).colorScheme.primary,
+                        //color: Theme.of(scaffoldCtx).colorScheme.primary,
+                        color: textColor,
                       ),
                     ),
                     Text(
                       message,
                       style: Theme.of(scaffoldCtx).textTheme.labelSmall!.copyWith(
-                        color: Theme.of(scaffoldCtx).colorScheme.primary,
+                        //color: Theme.of(scaffoldCtx).colorScheme.primary,
+                        color: textColor,
                       ),
                     ),
                   ],
                 ),
               ),
+
+              ///vertical line
               Container(
-                color: Colors.grey,
+                color: AppColors.whiteColor,
                 height: 35,
                 width: 1,
                 margin: const EdgeInsets.symmetric(horizontal: 5),
               ),
+
+              ///button
               SnackBarAction(
-                label: "UNDO",
-                textColor: Colors.black,
+                label: labelTextButton,
+                //textColor: Colors.black,
+                textColor: textColor,
                 onPressed: onPressed,
               ),
             ],

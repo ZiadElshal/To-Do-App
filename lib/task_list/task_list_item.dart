@@ -26,6 +26,7 @@ class _TaskListItemState extends State<TaskListItem> {
     var provider = Provider.of<AppConfigProvider>(context);
     var listProvider = Provider.of<ListProvider>(context);
     var authProvider = Provider.of<AuthUserProvider>(context);
+    String? uId = authProvider.currentUser!.id;
 
     return Container(
       margin: EdgeInsets.all(12),
@@ -41,6 +42,9 @@ class _TaskListItemState extends State<TaskListItem> {
                 bottomLeft: Radius.circular(25),
               ),
               onPressed: (context){
+                // Temporary store the task to restore it later
+                final deletedTask = widget.task;
+
                 ///delete task from firebase
                 FirebaseUtils.deleteTaskFromFireStore(widget.task, authProvider.currentUser!.id!)
                     .then((value){   //for online
@@ -54,14 +58,23 @@ class _TaskListItemState extends State<TaskListItem> {
                 }
                 );
 
-                // CustomSnackBar(
-                //     scaffoldCtx: this.context,
-                //     title: widget.task.title ,
-                //     message: "Deleted Successfully.",
-                //     icon: Icon(Icons.check_circle_outline_rounded),
-                //     onPressed: (){},
-                //     deletedTask: widget.task
-                // ).showSnackBar();
+                /// Show snack bar with undo option
+                CustomSnackBar(
+                    scaffoldCtx: this.context,
+                    title: widget.task.title ,
+                    message: "Deleted Successfully.",
+                    icon: Icon(Icons.check_circle_outline_rounded, color: AppColors.whiteColor,),
+
+                    labelTextButton: "UNDO",
+                    deletedTask: widget.task,
+                    onPressed: (){
+                      FirebaseUtils.addTaskToFireStore(deletedTask, authProvider.currentUser!.id!)
+                          .then((value) {
+                        print("Task Restored Successfully");
+                        listProvider.getAllTasksFromFireStore(authProvider.currentUser!.id!);
+                      });
+                    },
+                ).showSnackBar();
               },
               backgroundColor: AppColors.redColor,
               foregroundColor: Colors.white,
@@ -95,10 +108,6 @@ class _TaskListItemState extends State<TaskListItem> {
                   ? AppColors.whiteColor
                   : AppColors.primaryDarkColor,
               borderRadius: BorderRadius.circular(25),
-              // BorderRadius.only(
-              //   topRight: Radius.circular(25),
-              //   bottomRight: Radius.circular(25),
-              // ),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -154,44 +163,42 @@ class _TaskListItemState extends State<TaskListItem> {
                   ),
                 ),
                 ///check button
-                Visibility(
-                  visible: !widget.task.isDone, // Only show the button if the task is not done,
-                  child: InkWell(
-                    onTap: () {
-                      // Update task in Firebase
-                      FirebaseUtils.updateTaskInFireStore(widget.task, authProvider.currentUser!.id!);
+                InkWell(
+                  onTap: () {
+                    // Update the task locally
+                    widget.task.isDone = !widget.task.isDone;
 
-                      // Update the task locally
-                      widget.task.isDone = true;
+                    // Update task in Firebase
+                    FirebaseUtils.updateTaskIsDoneInFireStore(widget.task, authProvider.currentUser!.id!,);
 
-                      // Update the UI
-                      setState(() {});
-                    },
-                    child: Container(
-                      margin: EdgeInsets.all(25),
-                      padding: EdgeInsets.symmetric(
-                          vertical: MediaQuery.of(context).size.height * 0.005,
-                          horizontal: MediaQuery.of(context).size.height * 0.022),
-                      decoration: BoxDecoration(
-                        color: AppColors.primaryColor,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Icon(
-                        Icons.check,
-                        color: AppColors.whiteColor,
-                        size: 30,
-                      ),
+                    // Update the UI
+                    setState(() {});
+                  },
+                  child: widget.task.isDone == true ?
+                  /// Done text
+                  Text(
+                    widget.task.isDone ? "Done!   " : "", // Display "Done!" only if the task is done
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        color: AppColors.greenColor
+                    ),
+                  ) :
+                  Container(
+                    margin: EdgeInsets.all(25),
+                    padding: EdgeInsets.symmetric(
+                        vertical: MediaQuery.of(context).size.height * 0.005,
+                        horizontal: MediaQuery.of(context).size.height * 0.022),
+                    decoration: BoxDecoration(
+                      color: AppColors.primaryColor,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(
+                      Icons.check,
+                      color: AppColors.whiteColor,
+                      size: 30,
                     ),
                   ),
                 ),
 
-                /// Done text
-                Text(
-                  widget.task.isDone ? "Done!   " : "", // Display "Done!" only if the task is done
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      color: AppColors.greenColor
-                  ),
-                ),
               ],
             )
         ),

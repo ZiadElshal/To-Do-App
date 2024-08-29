@@ -77,6 +77,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                   SizedBox(height: MediaQuery.of(context).size.height*0.02,),
 
+                  ///text field for E-mail
                   CustomTextFormField(label: "E-mail Address", controller: emailController,
                     validator: (text){
                       if (text == null || text.trim().isEmpty){
@@ -92,6 +93,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     },
                     keyboardType: TextInputType.emailAddress,
                   ),
+
+                  ///text field for password
                   CustomTextFormField(label: "Password", controller: passwordController,
                     validator: (text){
                       if (text == null || text.trim().isEmpty){
@@ -103,28 +106,22 @@ class _LoginScreenState extends State<LoginScreen> {
                       return null;
                     },
                     keyboardType: TextInputType.visiblePassword,
-                    // obscureText: true
-                    //     ?Icon(
-                    //   obscureText
-                    //       ? Icons.visibility_rounded
-                    //       : Icons.visibility_off_rounded,
-                    //   size: 24,
-                    // ):
-
                     isPasswordVisible: true,
-                    obscureText: !isPasswordVisible,
+                    obscureText: !isPasswordVisible, // This controls whether the text is visible or not
                     icon: IconButton(
                       onPressed: (){
                         isPasswordVisible = !isPasswordVisible;
                         setState(() {});
                       },
-                      icon: Icon(isPasswordVisible ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+                      icon: Icon(
+                        isPasswordVisible
+                            ? Icons.visibility_outlined
+                            : Icons.visibility_off_outlined,
                         color: AppColors.labelTextColor,
                         size: 30,
                       ),
                     ),
                   ),
-                  //SizedBox(height: MediaQuery.of(context).size.height*0.0,),
 
                   Padding(
                     padding: EdgeInsets.all(5),

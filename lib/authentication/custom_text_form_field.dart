@@ -6,13 +6,15 @@ class CustomTextFormField extends StatelessWidget {
   String? Function(String?)? validator;
   TextInputType keyboardType;
   TextEditingController controller;
-  bool? obscureText;
+  bool obscureText;
   Widget? icon;
   bool isPasswordVisible;
+  bool isConfirmPasswordVisible;
 
   CustomTextFormField({required this.label, required this.validator,
   this.keyboardType = TextInputType.text, required this.controller,
-  this.icon, this.obscureText, this.isPasswordVisible = false});
+  this.icon, this.obscureText = false, this.isPasswordVisible = false,
+  this.isConfirmPasswordVisible = false});
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +65,7 @@ class CustomTextFormField extends StatelessWidget {
         validator: validator,
         keyboardType: keyboardType,
         controller: controller,
-        obscureText: isPasswordVisible,
+        obscureText: obscureText,
 
       ),
     );

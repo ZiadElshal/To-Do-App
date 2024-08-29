@@ -34,6 +34,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   // TextEditingController confirmPasswordController = TextEditingController();
 
   var formKey = GlobalKey<FormState>();
+  bool isPasswordVisible = false;
+  bool isConfirmPasswordVisible = false;
   //late AuthUserProvider authUserProvider;
   @override
   Widget build(BuildContext context) {
@@ -92,6 +94,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     },
                     keyboardType: TextInputType.emailAddress,
                   ),
+
+                  ///text field for password
                   CustomTextFormField(label: "Password", controller: passwordController,
                     validator: (text){
                       if (text == null || text.trim().isEmpty){
@@ -103,19 +107,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       return null;
                     },
                     keyboardType: TextInputType.visiblePassword,
-                    // obscureText: true
-                    //     ?Icon(
-                    //   obscureText
-                    //       ? Icons.visibility_rounded
-                    //       : Icons.visibility_off_rounded,
-                    //   size: 24,
-                    // ):
-                    obscureText: true,
-                    icon: Icon(Icons.visibility_outlined,
-                    color: AppColors.labelTextColor,
-                    size: 30,
+                    isPasswordVisible: true,
+                    obscureText: !isPasswordVisible, // This controls whether the text is visible or not
+                    icon: IconButton(
+                      onPressed: (){
+                        isPasswordVisible = !isPasswordVisible;
+                        setState(() {});
+                      },
+                      icon: Icon(
+                        isPasswordVisible
+                            ? Icons.visibility_outlined
+                            : Icons.visibility_off_outlined,
+                        color: AppColors.labelTextColor,
+                        size: 30,
+                      ),
                     ),
                   ),
+                  ///text field for Confirm password
                   CustomTextFormField(label: "Confirm Password", controller: confirmPasswordController,
                     validator: (text){
                       if (text == null || text.trim().isEmpty){
@@ -127,10 +135,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       return null;
                     },
                     keyboardType: TextInputType.visiblePassword,
-                    obscureText: true,
-                    icon: Icon(Icons.visibility_outlined,
-                      color: AppColors.labelTextColor,
-                      size: 30,
+                    isConfirmPasswordVisible: true,
+                    obscureText: !isConfirmPasswordVisible, // This controls whether the text is visible or not
+                    icon: IconButton(
+                      onPressed: (){
+                        isConfirmPasswordVisible = !isConfirmPasswordVisible;
+                        setState(() {});
+                      },
+                      icon: Icon(
+                        isConfirmPasswordVisible
+                            ? Icons.visibility_outlined
+                            : Icons.visibility_off_outlined,
+                        color: AppColors.labelTextColor,
+                        size: 30,
+                      ),
                     ),
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height*0.06,),

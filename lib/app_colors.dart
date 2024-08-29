@@ -16,5 +16,5 @@ class AppColors {
   static const Color labelTextColor = Color(0xff797979);
   static const Color authPrimaryColor = Color(0xff3598DB);
   static const Color textButtonLightColor = Color(0xff505050);
-
+  static const Color snackBarColor = Color(0xff192b49);
 }

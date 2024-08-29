@@ -29,12 +29,32 @@ class FirebaseUtils{
   }
 
   ///func to edit task
-  static Future<void> updateTaskInFireStore(Task task, String uId) {
+  static Future<void> editTaskInFireStore(Task task, String uId) {
     var taskCollection = getTasksCollection(uId);   //collection
 
     return taskCollection.doc(task.id).update({
-      'isDone': true,
-      //isDone ?? task.isDone,
+      'isDone': task.isDone,
+    });
+  }
+  
+  // static void editTaskInFireStore(Task task, String userId) {
+  //   if (task.id != null && task.id.isNotEmpty) {
+  //     FirebaseFirestore.instance.collection('users').doc(userId).collection('tasks').doc(task.id).update({
+  //       'title': task.title,
+  //       'description': task.description,
+  //       'dateTime': task.dateTime,
+  //     });
+  //   } else {
+  //     print("Task ID is null or empty");
+  //   }
+  // }
+
+  ///func to edit isDone task
+  static Future<void> updateTaskIsDoneInFireStore(Task task, String uId) {
+    var taskCollection = getTasksCollection(uId);   //collection
+
+    return taskCollection.doc(task.id).update({
+      'isDone': task.isDone,
     });
   }
 
