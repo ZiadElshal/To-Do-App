@@ -46,4 +46,9 @@ class ListProvider extends ChangeNotifier{
     selectDate = newSelectDate;
     getAllTasksFromFireStore(uId);
   }
+
+  Future<void> editTask(String id, String title, String desc, String uid,
+      DateTime datetime) {
+    return FirebaseUtils.editTask(id, title, desc, uid, datetime);
+  }
 }

@@ -3,6 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_app/app_colors.dart';
+import 'package:todo_app/custom_snack_bar.dart';
+import 'package:todo_app/custom_snack_bar_without_actions.dart';
 import 'package:todo_app/firebase_utils.dart';
 import 'package:todo_app/providers/app_config_provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -58,6 +60,7 @@ class _AddTaskBottomsheetState extends State<AddTaskBottomsheet> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
+                    ///task title
                     TextFormField(
                       validator: (text){
                         if(text == null || text.isEmpty){
@@ -80,10 +83,16 @@ class _AddTaskBottomsheetState extends State<AddTaskBottomsheet> {
                           //   )
                           // )
                         ),
+                      style: TextStyle(
+                        color: provider.appTheme == ThemeMode.light
+                            ? AppColors.blackColor
+                            : AppColors.whiteColor,
+                      ),
                       ),
 
                       SizedBox(height: MediaQuery.of(context).size.height*0.011),
 
+                    ///task details
                       TextFormField(
                         validator: (text){
                           if(text == null || text.isEmpty){
@@ -106,6 +115,11 @@ class _AddTaskBottomsheetState extends State<AddTaskBottomsheet> {
                             // )
                         ),
                         maxLines: 4,
+                        style: TextStyle(
+                          color: provider.appTheme == ThemeMode.light
+                              ? AppColors.blackColor
+                              : AppColors.whiteColor,
+                        ),
                       ),
 
                       SizedBox(height: MediaQuery.of(context).size.height*0.03),
@@ -149,11 +163,20 @@ class _AddTaskBottomsheetState extends State<AddTaskBottomsheet> {
 
                       SizedBox(height: MediaQuery.of(context).size.height*0.03),
 
+                      ///button to add task
                       FloatingActionButton(
                         backgroundColor: AppColors.primaryColor,
                         onPressed: (){
                           addTask();
+
+                          /// Show snack bar after added task
+                          CustomSnackBarWithoutActions(
+                            scaffoldCtx: this.context,
+                            title: "Task Added Successfully!  " ,
+                            icon: Icon(Icons.check_circle_outline_rounded, color: AppColors.whiteColor,),
+                          ).showSnackBar();
                         },
+
                         child: Icon(Icons.check,
                           color: AppColors.whiteColor,
                           size: 35,

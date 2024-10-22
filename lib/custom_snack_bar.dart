@@ -4,26 +4,25 @@ import 'package:todo_app/model/task.dart';
 
 class CustomSnackBar {
   final BuildContext scaffoldCtx;
-  final String title;
-  final String message;
+  final String? title;
+  final String? message;
   //final String imagePath;
-  final Icon icon;
-  final VoidCallback onPressed;
-  final String labelTextButton;
-  final Task deletedTask;         // to store the deleted task
-  final Color backgroundColor;
-  final Color textColor; // Custom text color
+  final Icon? icon;
+  final VoidCallback? onPressed;
+  final String? labelTextButton;
+  final Task? deletedTask;         // to store the deleted task
+  final Color? backgroundColor;
+  final Color? textColor; // Custom text color
 
 
   CustomSnackBar({
     required this.scaffoldCtx,
-    required this.title,
-    required this.message,
-    //required this.imagePath,
+    this.title,
+    this.message,
     required this.icon,
-    required this.onPressed,
-    required this.deletedTask,
-    this.labelTextButton = "",
+    this.onPressed,
+    this.deletedTask,
+    this.labelTextButton,
     this.backgroundColor = Colors.black, // Default background color
     this.textColor = Colors.white
   });
@@ -43,7 +42,7 @@ class CustomSnackBar {
           child: Row(
             children: [
               const SizedBox(width: 5, height: 0),
-              icon,
+              icon!,
               //Image.asset(imagePath, height: 40, width: 40),
               const SizedBox(width: 10, height: 0),
               Expanded(
@@ -52,14 +51,16 @@ class CustomSnackBar {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      title,
+                      // title,
+                      title!,
                       style: Theme.of(scaffoldCtx).textTheme.labelLarge!.copyWith(
                         //color: Theme.of(scaffoldCtx).colorScheme.primary,
                         color: textColor,
                       ),
                     ),
                     Text(
-                      message,
+                      // message,
+                      message!,
                       style: Theme.of(scaffoldCtx).textTheme.labelSmall!.copyWith(
                         //color: Theme.of(scaffoldCtx).colorScheme.primary,
                         color: textColor,
@@ -79,10 +80,12 @@ class CustomSnackBar {
 
               ///button
               SnackBarAction(
-                label: labelTextButton,
+                // label: labelTextButton,
+                label: labelTextButton!,
                 //textColor: Colors.black,
                 textColor: textColor,
-                onPressed: onPressed,
+                // onPressed: onPressed,
+                onPressed: onPressed!,
               ),
             ],
           ),

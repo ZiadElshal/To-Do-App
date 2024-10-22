@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_app/app_colors.dart';
 import 'package:todo_app/custom_snack_bar.dart';
@@ -28,81 +27,100 @@ class _TaskListItemState extends State<TaskListItem> {
     var authProvider = Provider.of<AuthUserProvider>(context);
     String? uId = authProvider.currentUser!.id;
 
-    return Container(
-      margin: EdgeInsets.all(12),
-      child: Slidable(
-        // The start action pane is the one at the left or the top side.
-        startActionPane: ActionPane(
-          extentRatio: 0.52,
-          motion: StretchMotion(),
-          children: [
-            SlidableAction(
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(25),
-                bottomLeft: Radius.circular(25),
-              ),
-              onPressed: (context){
-                // Temporary store the task to restore it later
-                final deletedTask = widget.task;
+    return InkWell(
+      ///to edit task when tap on container
+      onTap: () async {
+        /// Edit task and wait for result
+        Task? updatedTask = await Navigator.of(context).pushNamed(
+          EditTaskScreen.routeName,
+          arguments: widget.task,
+        ) as Task?;
 
-                ///delete task from firebase
-                FirebaseUtils.deleteTaskFromFireStore(widget.task, authProvider.currentUser!.id!)
-                    .then((value){   //for online
-                  print("Task Deleted Successfully");
-                  listProvider.getAllTasksFromFireStore(authProvider.currentUser!.id!);
-                })
-                    .timeout(Duration(seconds: 1),  //for offline
-                onTimeout: (){
-                      print("Task Deleted Successfully");
-                      listProvider.getAllTasksFromFireStore(authProvider.currentUser!.id!);
-                }
-                );
+        /// Check if a task was returned and update the UI
+        if (updatedTask != null) {
+          setState(() {
+            widget.task = updatedTask;  // Update the task with the edited one
+          });
 
-                /// Show snack bar with undo option
-                CustomSnackBar(
+          // Optionally, update it in the backend immediately if needed
+          listProvider.getAllTasksFromFireStore(uId!);
+        }
+      },
+
+      child: Container(
+        margin: EdgeInsets.all(12),
+        child: Slidable(
+          startActionPane: ActionPane(
+            extentRatio: 0.52,
+            motion: StretchMotion(),
+            children: [
+              SlidableAction(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(25),
+                  bottomLeft: Radius.circular(25),
+                ),
+                onPressed: (context) {
+                  final deletedTask = widget.task;
+
+                  /// Delete task from Firebase
+                  FirebaseUtils.deleteTaskFromFireStore(widget.task, authProvider.currentUser!.id!)
+                      .then((value) {
+                    listProvider.getAllTasksFromFireStore(authProvider.currentUser!.id!);
+                  }).timeout(Duration(seconds: 1), onTimeout: () {
+                    listProvider.getAllTasksFromFireStore(authProvider.currentUser!.id!);
+                  });
+
+                  /// Show snack bar with undo option
+                  CustomSnackBar(
                     scaffoldCtx: this.context,
-                    title: widget.task.title ,
+                    title: widget.task.title,
                     message: "Deleted Successfully.",
-                    icon: Icon(Icons.check_circle_outline_rounded, color: AppColors.whiteColor,),
-
+                    icon: Icon(Icons.check_circle_outline_rounded, color: AppColors.whiteColor),
                     labelTextButton: "UNDO",
                     deletedTask: widget.task,
-                    onPressed: (){
+                    onPressed: () {
                       FirebaseUtils.addTaskToFireStore(deletedTask, authProvider.currentUser!.id!)
                           .then((value) {
-                        print("Task Restored Successfully");
                         listProvider.getAllTasksFromFireStore(authProvider.currentUser!.id!);
                       });
                     },
-                ).showSnackBar();
-              },
-              backgroundColor: AppColors.redColor,
-              foregroundColor: Colors.white,
-              icon: Icons.delete,
-              label: 'Delete',
-
-            ),
-            SlidableAction(
-              borderRadius: BorderRadius.only(
-                topRight: Radius.circular(25),
-                bottomRight: Radius.circular(25),
+                  ).showSnackBar();
+                },
+                backgroundColor: AppColors.redColor,
+                foregroundColor: Colors.white,
+                icon: Icons.delete,
+                label: 'Delete',
               ),
-              onPressed: (context){
-                ///edit task
-                Navigator.of(context).pushNamed(EditTaskScreen.routeName,
-                arguments: Task(title: widget.task.title, description: widget.task.description, dateTime: widget.task.dateTime)
-                );
-              },
-              backgroundColor: Color(0xFF21B7CA),
-              foregroundColor: Colors.white,
-              icon: Icons.edit_note_rounded,
-              label: 'Edit',
-            ),
-          ],
-        ),
+              SlidableAction(
+                borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(25),
+                  bottomRight: Radius.circular(25),
+                ),
+                onPressed: (context) async {
+                  /// Edit task and wait for result
+                  Task? updatedTask = await Navigator.of(context).pushNamed(
+                    EditTaskScreen.routeName,
+                    arguments: widget.task,
+                  ) as Task?;
 
-        child: Container(
-            //margin: EdgeInsets.all(12),
+                  /// Check if a task was returned and update the UI
+                  if (updatedTask != null) {
+                    setState(() {
+                      widget.task = updatedTask;  // Update the task with the edited one
+                    });
+
+                    // Optionally, update it in the backend immediately if needed
+                    listProvider.getAllTasksFromFireStore(uId!);
+                  }
+                },
+                backgroundColor: Color(0xFF21B7CA),
+                foregroundColor: Colors.white,
+                icon: Icons.edit_note_rounded,
+                label: 'Edit',
+              ),
+            ],
+          ),
+          child: Container(
             decoration: BoxDecoration(
               color: provider.appTheme == ThemeMode.light
                   ? AppColors.whiteColor
@@ -112,7 +130,7 @@ class _TaskListItemState extends State<TaskListItem> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                ///vertical line
+                /// Vertical line
                 Container(
                   margin: EdgeInsets.all(25),
                   decoration: BoxDecoration(
@@ -124,8 +142,7 @@ class _TaskListItemState extends State<TaskListItem> {
                   height: MediaQuery.of(context).size.height * 0.09,
                   width: MediaQuery.of(context).size.height * 0.005,
                 ),
-
-                ///task name
+                /// Task name and description
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -133,9 +150,9 @@ class _TaskListItemState extends State<TaskListItem> {
                       Text(
                         widget.task.title,
                         style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            color: widget.task.isDone
-                                ? AppColors.greenColor
-                                : AppColors.primaryColor,
+                          color: widget.task.isDone
+                              ? AppColors.greenColor
+                              : AppColors.primaryColor,
                         ),
                       ),
                       Row(
@@ -147,46 +164,40 @@ class _TaskListItemState extends State<TaskListItem> {
                                 : AppColors.whiteColor,
                           ),
                           Flexible(
-                            child: Text(widget.task.description,
-                                style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                                      color: provider.appTheme == ThemeMode.light
-                                          ? AppColors.blackColor
-                                          : AppColors.whiteColor,
-                                    ),
+                            child: Text(
+                              widget.task.description,
+                              style: Theme.of(context).textTheme.displaySmall?.copyWith(
+                                color: provider.appTheme == ThemeMode.light
+                                    ? AppColors.blackColor
+                                    : AppColors.whiteColor,
+                              ),
                               overflow: TextOverflow.ellipsis,
                             ),
-
                           ),
                         ],
                       ),
                     ],
                   ),
                 ),
-                ///check button
+                /// Check button
                 InkWell(
                   onTap: () {
-                    // Update the task locally
                     widget.task.isDone = !widget.task.isDone;
-
-                    // Update task in Firebase
-                    FirebaseUtils.updateTaskIsDoneInFireStore(widget.task, authProvider.currentUser!.id!,);
-
-                    // Update the UI
+                    FirebaseUtils.updateTaskIsDoneInFireStore(widget.task, authProvider.currentUser!.id!);
                     setState(() {});
                   },
-                  child: widget.task.isDone == true ?
-                  /// Done text
-                  Text(
-                    widget.task.isDone ? "Done!   " : "", // Display "Done!" only if the task is done
+                  child: widget.task.isDone
+                      ? Text(
+                    "Done!   ",
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        color: AppColors.greenColor
-                    ),
-                  ) :
-                  Container(
+                        color: AppColors.greenColor),
+                  )
+                      : Container(
                     margin: EdgeInsets.all(25),
                     padding: EdgeInsets.symmetric(
-                        vertical: MediaQuery.of(context).size.height * 0.005,
-                        horizontal: MediaQuery.of(context).size.height * 0.022),
+                      vertical: MediaQuery.of(context).size.height * 0.005,
+                      horizontal: MediaQuery.of(context).size.height * 0.022,
+                    ),
                     decoration: BoxDecoration(
                       color: AppColors.primaryColor,
                       borderRadius: BorderRadius.circular(12),
@@ -198,9 +209,9 @@ class _TaskListItemState extends State<TaskListItem> {
                     ),
                   ),
                 ),
-
               ],
-            )
+            ),
+          ),
         ),
       ),
     );

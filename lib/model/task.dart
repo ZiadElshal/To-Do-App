@@ -18,7 +18,10 @@ class Task{
     id: data["id"] as String,
     title: data["title"] as String,
     description: data["description"] as String,
-    dateTime: (data["dateTime"] as Timestamp).toDate(),
+      dateTime: data["dateTime"] is Timestamp
+          ? (data["dateTime"] as Timestamp).toDate()
+          : DateTime.fromMillisecondsSinceEpoch(data["dateTime"] as int),  // Handle int case
+    // dateTime: (data["dateTime"] as Timestamp).toDate(),
       //DateTime.fromMillisecondsSinceEpoch(data["dateTime"]),
     isDone: data["isDone"] as bool
   );
@@ -29,7 +32,8 @@ class Task{
       "id" : id,
       "title" : title,
       "description" : description,
-      "dateTime" : dateTime,
+      "dateTime": Timestamp.fromDate(dateTime),  // Save as Firestore Timestamp
+      // "dateTime" : dateTime,
       //Timestamp.fromDate(dateTime),
       "isDone" : isDone,
     };

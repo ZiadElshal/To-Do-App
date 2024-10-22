@@ -35,22 +35,73 @@ class _HomeScreenState extends State<HomeScreen> {
           color: AppColors.whiteColor
         ),
         toolbarHeight: MediaQuery.of(context).size.height*0.1,
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(AppLocalizations.of(context)!.app_title,
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                color: provider.appTheme == ThemeMode.light
+                    ? AppColors.whiteColor
+                    : AppColors.backGroundDarkColor,
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // Text(AppLocalizations.of(context)!.app_title
+                //    + " " + "(${authProvider.currentUser!.name})",
+                // style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                //   color: provider.appTheme == ThemeMode.light
+                //       ? AppColors.whiteColor
+                //       : AppColors.backGroundDarkColor,
+                // ),
+                // ),
 
-        title: Text(AppLocalizations.of(context)!.app_title
-           + " " + "(${authProvider.currentUser!.name})",
-        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-          color: provider.appTheme == ThemeMode.light
-              ? AppColors.whiteColor
-              : AppColors.backGroundDarkColor,
+                Row(
+                  children: [
+                    Icon(Icons.account_circle_outlined, size: 30,
+                      color: provider.appTheme == ThemeMode.light
+                          ? AppColors.whiteColor
+                          : AppColors.backGroundDarkColor,
+                    ),
+
+                    SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                    Text("${authProvider.currentUser!.name}",
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        color: provider.appTheme == ThemeMode.light
+                            ? AppColors.whiteColor
+                            : AppColors.backGroundDarkColor,
+                      ),
+                    ),
+                  ],
+                ),
+                // SizedBox(width: MediaQuery.of(context).size.width*0.59),
+                Row(
+                  children: [
+                    IconButton(onPressed: (){
+                      listProvider.tasksList = [];
+                      authProvider.currentUser = null;
+                      Navigator.of(context).pushReplacementNamed(LoginScreen.routeName);
+                    }, icon: Icon(Icons.login_outlined, size: 30,
+                      color: provider.appTheme == ThemeMode.light
+                          ? AppColors.whiteColor
+                          : AppColors.backGroundDarkColor,
+                    )
+                    ),
+                  ],
+                )
+              ],
+            ),
+          ],
         ),
-        ),
-        actions: [
-          IconButton(onPressed: (){
-            listProvider.tasksList = [];
-            authProvider.currentUser = null;
-            Navigator.of(context).pushReplacementNamed(LoginScreen.routeName);
-          }, icon: Icon(Icons.login_outlined, size: 30,))
-        ],
+        // actions: [
+        //   IconButton(onPressed: (){
+        //     listProvider.tasksList = [];
+        //     authProvider.currentUser = null;
+        //     Navigator.of(context).pushReplacementNamed(LoginScreen.routeName);
+        //   }, icon: Icon(Icons.login_outlined, size: 30,)
+        //   )
+        // ],
       ),
       body: tabs[selectedIndex],
       //Expanded(child: tabs[selectedIndex]),
@@ -66,6 +117,7 @@ class _HomeScreenState extends State<HomeScreen> {
       // ),
 
       bottomNavigationBar: BottomAppBar(
+
         elevation: 30,
         shadowColor: AppColors.primaryColor,
         // provider.appTheme == ThemeMode.light

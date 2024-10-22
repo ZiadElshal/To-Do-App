@@ -8,7 +8,9 @@ import 'package:todo_app/dialog_utils.dart';
 import 'package:todo_app/firebase_utils.dart';
 import 'package:todo_app/home/home_screen.dart';
 import 'package:todo_app/model/my_user.dart';
+import 'package:todo_app/providers/app_config_provider.dart';
 import 'package:todo_app/providers/auth_user_provider.dart';
+import 'package:todo_app/providers/shared_preference_utils.dart';
 
 class LoginScreen extends StatefulWidget {
   static const String routeName = "login_screen";
@@ -18,9 +20,11 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  TextEditingController emailController = TextEditingController(text: "ziad@route.com");
 
-  TextEditingController passwordController = TextEditingController(text: "123456");
+  ///test
+  TextEditingController emailController = TextEditingController(text: "ziadelshal25@route.com");
+
+  TextEditingController passwordController = TextEditingController(text: "123456z");
 
   // TextEditingController emailController = TextEditingController();
   //
@@ -31,7 +35,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return Stack(
       children: [
             Container(

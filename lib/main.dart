@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todo_app/authentication/login/login_screen.dart';
 import 'package:todo_app/authentication/register/register_screen.dart';
 import 'package:todo_app/home/home_screen.dart';
+import 'package:todo_app/model/task.dart';
 import 'package:todo_app/my_theme_data.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
@@ -12,6 +13,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:todo_app/providers/auth_user_provider.dart';
 import 'package:todo_app/providers/list_provider.dart';
 import 'package:todo_app/task_list/edit_task_screen.dart';
+import 'package:todo_app/task_list/task_list_item.dart';
 import 'firebase_options.dart';
 
 void main() async{
@@ -44,7 +46,6 @@ void main() async{
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
   @override
   Widget build(BuildContext context) {
     var provider = Provider.of<AppConfigProvider>(context);

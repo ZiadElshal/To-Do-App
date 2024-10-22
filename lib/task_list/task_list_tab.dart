@@ -82,7 +82,7 @@ class _TaskListTabState extends State<TaskListTab> {
               ),
             ),
 
-            //SizedBox(height: MediaQuery.of(context).size.height*0.1,),
+            SizedBox(height: MediaQuery.of(context).size.height*0.05,),
             Expanded(
               child: ListView.builder(
                   itemBuilder: (context, index){
